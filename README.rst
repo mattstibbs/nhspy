@@ -21,7 +21,14 @@ A python package to help with NHS-specific functions.
 Features
 --------
 
-* TODO
+### TODO
+* NHS Number Validation
+
+* CUI Formatting
+        * NHS Number (e.g. 123 456 7890)
+        * Dates (e.g. 01-Jan-1970 01:20)
+        * Patient Name (e.g. BLOGGS Joe)
+
 
 Credits
 ---------
