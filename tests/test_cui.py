@@ -142,6 +142,45 @@ class TestCUIDate(unittest.TestCase):
         cui_datetime = cui.DateTime(initial=callable)
         self.assertLessEqual(cui_datetime - dt, timedelta(microseconds=100))
 
+    def test_050_001_CreationInvalidValueTypeList(self):
+        """DateTime object cannot be created an Invalid Type - for instance a list"""
+        with self.assertRaises(ValueError):
+            cui_datetime = cui.DateTime(initial = [])
+
+    def test_050_002_CreationInvalidValueTypeTuple(self):
+        """DateTime object cannot be created an Invalid Type - for instance a tuple"""
+        with self.assertRaises(ValueError):
+            cui_datetime = cui.DateTime(initial=(0,))
+
+    def test_050_003_CreationInvalidValueTypeDictionary(self):
+        """DateTime object cannot be created an Invalid Type - for instance a dictionary"""
+        with self.assertRaises(ValueError):
+            cui_datetime = cui.DateTime(initial=dict())
+
+    def test_060_001_FormattingISOFormat(self):
+        """DateTime object can be formatted as a ISO standard time"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = "{}".format(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, '1966-08-17 08:40:00')
+
+    def test_060_002_FormattingCUIFormat(self):
+        """DateTime object can be formatted as a CUI standard format"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = "{0:v}".format(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, '17-Aug-1966 08:40')
+
+    def test_060_003_FormattingCUIFormatPaddingAlignWidth(self):
+        """DateTime object can be formatted as a CUI standard format with Padding, width and alignment"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = "{0:#>20v}".format(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, '###17-Aug-1966 08:40')
+
+    def test_060_004_FormattingCUIFormatCenter(self):
+        """DateTime object can be formatted as a CUI standard format centered"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = "{0: ^20v}".format(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, ' 17-Aug-1966 08:40  ')
+
 def load_tests(loader, tests=None, pattern=None):
     classes = [TestCUIDate]
     suite = unittest.TestSuite()

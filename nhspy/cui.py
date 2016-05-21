@@ -21,15 +21,29 @@ from datetime import datetime
 from numbers import Real
 from collections import Callable
 
+import re
+
 class _Core(object):
     """ _Core mixin - a place for common cui functionality
         All Cui Data types must inherit from _Core
     """
-    pass
+    fmt_spec = re.compile(
+        r"""
+         (?x)                           # Allow Verbose
+         (
+            (?P<fill>.?)                # Optional Fill Character
+            (?P<align>[<>^]?)           # Optional Align Character
+         )
+         (?P<width>\d*?)                # Optional Width specifier
+         v                              # Format type is v
+          """)
 
     def __format__(self, format_spec):
         raise NotImplemented("All cui data types must implement their own __format__ method if their other baseclass does not support it")
 
+
+    def _split_format_spec(self, format_spec):
+        pass
 
 class DateTime(datetime, _Core):
     """Date class - supports all the normal date/tme functions, and nhs cui formatting"""
@@ -44,6 +58,9 @@ class DateTime(datetime, _Core):
                             The Callable can return None, numeric, String, or datetime as above
                 if initial is not provided - defaults to now()
         """
+
+        initial_date = None
+
         if isinstance(initial, Callable):
             initial = initial()
 
@@ -59,14 +76,25 @@ class DateTime(datetime, _Core):
         if isinstance(initial, datetime):
             initial_date = initial
 
+        if initial_date is None:
+            raise ValueError('Invalid value for initial argument - must be a numeric, string, datetime, Callable or None')
+
         return datetime.__new__(cls, initial_date.year, initial_date.month, initial_date.day,
                             initial_date.hour, initial_date.minute, initial_date.second, initial_date.microsecond,
                             initial_date.tzinfo)
 
     def __format__(self, format_spec):
         """ Magic method to implement customised formatting"""
-        pass
+        if not format_spec: # No format spec - always return the ISO format
+            return str(self)
 
+        fmt_match = DateTime.fmt_spec.match(format_spec)
+        if fmt_match:
+            val, fmt = self.strftime('%d-%b-%Y %H:%M'),  format_spec[:-1] + "s"
+            return "{val:{fmt}}".format(fmt = fmt, val=val)
+        else:
+            val, fmt  = self,  format_spec
+            return "{val:{fmt}}".format(fmt = fmt, val=datetime(val))
 
 class NHSNumber(str, _Core):
     def __init__(self, number):
