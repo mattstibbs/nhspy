@@ -23,6 +23,7 @@ __author__ = 'Tony Flury : anthony.flury@btinternet.com'
 __created__ = '21 May 2016'
 
 
+# noinspection PyUnusedLocal
 class TestCUIDate(unittest.TestCase):
     def setUp(self):
         pass
@@ -35,22 +36,21 @@ class TestCUIDate(unittest.TestCase):
         now = datetime.now()
         cui_datetime = cui.DateTime()
         self.assertIsInstance(cui_datetime, cui.DateTime)
-        self.assertLessEqual(cui_datetime-now, timedelta(milliseconds=100))
+        self.assertLessEqual(cui_datetime - now, timedelta(milliseconds=100))
 
     def test_010_001_CreateFromTimeStamp(self):
         """DateTime object can be created from a valid timestamp"""
         ts = 1000.0
-        cui_datetime = cui.DateTime( initial=ts)
+        cui_datetime = cui.DateTime(initial=ts)
         ts_date = datetime.utcfromtimestamp(ts)
         self.assertEqual(cui_datetime, ts_date)
 
     def test_010_002_CreateFromInvalidTimeStamp(self):
         """DateTime object cannot be created from a invalid timestamp"""
-        ts = -62135596800 # 00:00 1st Jan 1 AD
-        ts = ts - 86400
+        ts = -62135596800  # 00:00 1st Jan 1 AD
+        ts -= 86400        # this should be 00:00 31st Dec 1 BC - which is outside the valid range.
         with self.assertRaises(ValueError):
             cui_datetime = cui.DateTime(initial=ts)
-            print cui_datetime
 
     def test_020_001_CreateFromStringNoLeadingZero(self):
         """DateTime Object created from a string in CUI format - day of month > 10"""
@@ -97,7 +97,7 @@ class TestCUIDate(unittest.TestCase):
             cui_datetime = cui.DateTime(initial=date_str)
 
     def test_030_001_CreateFromStandardDateTime(self):
-        """DateTime Object created from a datetime.datetime object from the standard Libary"""
+        """DateTime Object created from a datetime.datetime object from the standard Library"""
         then = datetime.now() + timedelta(days=1)
         cui_datetime = cui.DateTime(initial=then)
         self.assertEqual(cui_datetime, then)
@@ -105,7 +105,7 @@ class TestCUIDate(unittest.TestCase):
     def test_040_001_CreationInvalidValueTypeList(self):
         """DateTime object cannot be created an Invalid Type - for instance a list"""
         with self.assertRaises(ValueError):
-            cui_datetime = cui.DateTime(initial = [])
+            cui_datetime = cui.DateTime(initial=[])
 
     def test_040_002_CreationInvalidValueTypeTuple(self):
         """DateTime object cannot be created an Invalid Type - for instance a tuple"""
@@ -153,6 +153,8 @@ class TestCUIDate(unittest.TestCase):
         dt_str = str(cui.DateTime(initial=dt))
         self.assertEqual(dt_str, '17-Aug-1966 08:40')
 
+
+# noinspection PyUnusedLocal
 def load_tests(loader, tests=None, pattern=None):
     classes = [TestCUIDate]
     suite = unittest.TestSuite()
@@ -160,6 +162,7 @@ def load_tests(loader, tests=None, pattern=None):
         tests = loader.loadTestsFromTestCase(test_class)
         suite.addTests(tests)
     return suite
+
 
 if __name__ == '__main__':
     ldr = unittest.TestLoader()

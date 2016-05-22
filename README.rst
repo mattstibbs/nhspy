@@ -26,12 +26,16 @@ Features
 
 * CUI Formatting
         * NHS Number (e.g. 123 456 7890)
-        * Dates (e.g. 01-Jan-1970 01:20)
+        * Dates (e.g. 01-Jan-1970 01:20) : Initial Implementation in 0.2.0
         * Patient Name (e.g. BLOGGS Joe)
 
 
 Credits
----------
+-------
+
+Software and documentation developed by :
+
+Matt Stibbs and Tony Flury.
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 

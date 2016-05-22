@@ -16,15 +16,13 @@ Testable Statements :
     ....
 """
 
-__version__ = "0.1"
+import re
+from datetime import datetime
+from numbers import Real
+
 __author__ = 'Tony Flury : anthony.flury@btinternet.com'
 __created__ = '21 May 2016'
 
-from datetime import datetime
-from numbers import Real
-from collections import Callable
-
-import re
 
 class _Core(object):
     """ _Core mixin - a place for common cui functionality
@@ -42,12 +40,11 @@ class _Core(object):
           """)
 
     def __format__(self, format_spec):
-        raise NotImplemented("All cui data types must implement their own __format__ method if their other baseclass does not support it")
+        raise NotImplemented(
+            "All cui data types must implement their own __format__ method if their "
+            "other baseclass does not support it")
 
-
-    def _split_format_spec(self, format_spec):
-        pass
-
+# noinspection PyInitNewSignature
 class DateTime(datetime, _Core):
     """Date class - supports all the normal date/tme functions, and nhs cui formatting"""
 
@@ -68,41 +65,45 @@ class DateTime(datetime, _Core):
         if isinstance(initial, Real):
             initial_date = datetime.utcfromtimestamp(initial)
 
-        if isinstance(initial, basestring):
-            initial_date = datetime.strptime( initial, '%d-%b-%Y %H:%M')
+        if isinstance(initial, str):
+            initial_date = datetime.strptime(initial, '%d-%b-%Y %H:%M')
 
         if isinstance(initial, datetime):
             initial_date = initial
 
         if initial_date is None:
-            raise ValueError('Invalid value for initial argument - must be a numeric, string, datetime, Callable or None')
+            raise ValueError(
+                'Invalid value for initial argument - must be a numeric, string, datetime, Callable or None')
 
         return datetime.__new__(cls, initial_date.year, initial_date.month, initial_date.day,
-                            initial_date.hour, initial_date.minute, initial_date.second, initial_date.microsecond,
-                            initial_date.tzinfo)
+                                initial_date.hour, initial_date.minute, initial_date.second, initial_date.microsecond,
+                                initial_date.tzinfo)
 
     def __format__(self, format_spec):
         """ Magic method to implement customised formatting"""
-        if not format_spec: # No format spec - always return the ISO format
+        if not format_spec:  # No format spec - always return the ISO format
             return super(DateTime, self).__str__()
 
         fmt_match = DateTime.fmt_spec.match(format_spec)
         if fmt_match:
-            val, fmt = self.strftime('%d-%b-%Y %H:%M'),  format_spec[:-1] + "s"
-            return "{val:{fmt}}".format(fmt = fmt, val=val)
+            val, fmt = self.strftime('%d-%b-%Y %H:%M'), format_spec[:-1] + "s"
+            return "{val:{fmt}}".format(fmt=fmt, val=val)
         else:
-            val, fmt  = self,  format_spec
+            val, fmt = self, format_spec
             return super(DateTime, self).__format__(fmt)
 
     def __str__(self):
         return "{:v}".format(self)
 
+
 class NHSNumber(str, _Core):
+    # noinspection PyMissingConstructor
     def __init__(self, number):
         """ Create a CUI compliant NHSNumber - basically a string with customised formatting
 
-        :param number: The intial number - with or without separators
+        :param number: The initial number - with or without separators
         """
+        pass
 
     def __format__(self, format_spec):
         """ Magic method to implement customised formatting"""
@@ -117,7 +118,6 @@ class Name(_Core):
             :param first_name : The person's first name
         """
         pass
-
 
     def __format__(self, format_spec):
         """ Magic method to implement customised formatting"""

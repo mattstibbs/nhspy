@@ -16,9 +16,7 @@ Recognising that not every interface will produce date/times in the CUI format, 
 DateTime Class
 --------------
 
-.. code-block:: python
-
-    nhspy.cui.DateTime( initial=None )
+.. py:function:: nhspy.cui.DateTime( initial=None )
 
 The ``initial`` argument is as follows :
 
@@ -70,9 +68,9 @@ A format type of `v` will always output the DateTime in the CUI DateTime format 
 
 With the `v` format type the full format specifier is :
 
-    **[[fill]align][width]v** where :
+    ``[[fill]align][width]v`` where :
 
-      - ``fill`` : A single fill character which is used when the output is aligned within a fixed width. Defaults to a space.
+      - ``fill`` : A single fill character which is used when the output is aligned within a fixed width. Defaults to a space if ommitted.
       - ``align`` : One of ``>`` (right align - default) ``<`` (left align) or ``^`` (centered).
       - ``width`` : An integer given the the minimum text width for the output. Note the standard format is always 17 characters long.
 
