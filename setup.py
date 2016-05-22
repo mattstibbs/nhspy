@@ -24,7 +24,7 @@ test_requirements = [
 
 setup(
     name='nhspy',
-    version='0.1.0',
+    version='0.2.0',
     description="A python package to help with NHS-specific functions.",
     long_description=readme + '\n\n' + history,
     author="Matt Stibbs",
