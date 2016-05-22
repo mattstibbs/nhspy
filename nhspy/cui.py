@@ -93,7 +93,7 @@ class DateTime(datetime, _Core):
             return super(DateTime, self).__format__(fmt)
 
     def __str__(self):
-        return "{:v}".format(self)
+        return "{me:v}".format(me=self)
 
 
 class NHSNumber(str, _Core):
