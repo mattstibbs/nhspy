@@ -102,84 +102,56 @@ class TestCUIDate(unittest.TestCase):
         cui_datetime = cui.DateTime(initial=then)
         self.assertEqual(cui_datetime, then)
 
-    def test_040_001_CreateFromCallableReturningNone(self):
-        """DateTime object can be created from a callable returning None"""
-        def callable():
-            return None
-
-        now = datetime.now()
-        cui_datetime = cui.DateTime(initial=callable)
-        self.assertIsInstance(cui_datetime, cui.DateTime)
-        self.assertLessEqual(cui_datetime - now, timedelta(milliseconds=100))
-
-    def test_040_002_CreateFromCallableReturningTimestamp(self):
-        """DateTime object can be created from a callable returning a Timestamp"""
-
-        def callable():
-            return 86460 # 02-Jan-1970 00:01 (UTC)
-
-        dt = datetime(year=1970, month=1, day=2, hour=0, minute=1, second=0, microsecond=0,tzinfo=None)
-        cui_datetime = cui.DateTime(initial=callable)
-        self.assertEqual(cui_datetime, dt)
-
-    def test_040_003_CreateFromCallableReturningString(self):
-        """DateTime object can be created from a callable returning a String"""
-
-        def callable():
-            return '17-Aug-1966 08:40'
-
-        dt = datetime(year=1966, month=8, day=17, hour=8, minute=40, second=0, microsecond=0, tzinfo=None)
-        cui_datetime = cui.DateTime(initial=callable)
-        self.assertEqual(cui_datetime, dt)
-
-    def test_040_004_CreateFromCallableReturningDateTime(self):
-        """DateTime object can be created from a callable returning a standard Library Date Time"""
-
-        def callable():
-            return datetime.now() + timedelta(hours=3)
-
-        dt = callable()
-        cui_datetime = cui.DateTime(initial=callable)
-        self.assertLessEqual(cui_datetime - dt, timedelta(microseconds=100))
-
-    def test_050_001_CreationInvalidValueTypeList(self):
+    def test_040_001_CreationInvalidValueTypeList(self):
         """DateTime object cannot be created an Invalid Type - for instance a list"""
         with self.assertRaises(ValueError):
             cui_datetime = cui.DateTime(initial = [])
 
-    def test_050_002_CreationInvalidValueTypeTuple(self):
+    def test_040_002_CreationInvalidValueTypeTuple(self):
         """DateTime object cannot be created an Invalid Type - for instance a tuple"""
         with self.assertRaises(ValueError):
             cui_datetime = cui.DateTime(initial=(0,))
 
-    def test_050_003_CreationInvalidValueTypeDictionary(self):
+    def test_040_003_CreationInvalidValueTypeDictionary(self):
         """DateTime object cannot be created an Invalid Type - for instance a dictionary"""
         with self.assertRaises(ValueError):
             cui_datetime = cui.DateTime(initial=dict())
 
-    def test_060_001_FormattingISOFormat(self):
+    def test_050_001_FormattingISOFormat(self):
         """DateTime object can be formatted as a ISO standard time"""
         dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
         dt_str = "{}".format(cui.DateTime(initial=dt))
         self.assertEqual(dt_str, '1966-08-17 08:40:00')
 
-    def test_060_002_FormattingCUIFormat(self):
+    def test_050_002_FormattingCUIFormat(self):
         """DateTime object can be formatted as a CUI standard format"""
         dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
         dt_str = "{0:v}".format(cui.DateTime(initial=dt))
         self.assertEqual(dt_str, '17-Aug-1966 08:40')
 
-    def test_060_003_FormattingCUIFormatPaddingAlignWidth(self):
+    def test_050_003_FormattingCUIFormatPaddingAlignWidth(self):
         """DateTime object can be formatted as a CUI standard format with Padding, width and alignment"""
         dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
         dt_str = "{0:#>20v}".format(cui.DateTime(initial=dt))
         self.assertEqual(dt_str, '###17-Aug-1966 08:40')
 
-    def test_060_004_FormattingCUIFormatCenter(self):
+    def test_050_004_FormattingCUIFormatCenter(self):
         """DateTime object can be formatted as a CUI standard format centered"""
         dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
         dt_str = "{0: ^20v}".format(cui.DateTime(initial=dt))
         self.assertEqual(dt_str, ' 17-Aug-1966 08:40  ')
+
+    def test_050_005_FormattingCUIDateFormatting(self):
+        """DateTime object can be formatted using the normal datetime format strings"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = "{0:%Y/%m/%d}".format(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, '1966/08/17')
+
+    def test_060_001_strMethod(self):
+        """DateTime object formatted using the str() method"""
+        dt = datetime(day=17, month=8, year=1966, hour=8, minute=40, tzinfo=None)
+        dt_str = str(cui.DateTime(initial=dt))
+        self.assertEqual(dt_str, '17-Aug-1966 08:40')
 
 def load_tests(loader, tests=None, pattern=None):
     classes = [TestCUIDate]
@@ -188,7 +160,6 @@ def load_tests(loader, tests=None, pattern=None):
         tests = loader.loadTestsFromTestCase(test_class)
         suite.addTests(tests)
     return suite
-
 
 if __name__ == '__main__':
     ldr = unittest.TestLoader()

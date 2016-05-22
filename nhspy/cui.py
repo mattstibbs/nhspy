@@ -4,12 +4,15 @@
 # nhspy : Implementation of cui
 
 Summary :
-    <summary of module/class being implemented>
+    Implements Common User Interface formatting for key functionality
 Use Case :
-    As a <actor> I want <outcome> So that <justification>
+    As a Developer I want standard common user Interface Library So that I can develop applications which will
+    display data in a consistent manner
 
 Testable Statements :
-    Can I <Boolean statement>
+    Can I input date/time information in the CUI date format (dd-mmm-YYYY HH:MM)
+    Can I manipulate date/time information is manner compliant with python standard libraries
+    Can I output date/time information in the CUI date format (dd-mmm-YYYY HH:MM)
     ....
 """
 
@@ -54,15 +57,10 @@ class DateTime(datetime, _Core):
                     numeric - a timestamps of seconds since 1970-01-01 00:00
                     datetime - a value derived from the datetime module
                     string - a text value in nhs standard format (e.g. 01-Jan-1970 01:20)
-                    callable - a function to be called on construction (so a date time can be used as a default)
-                            The Callable can return None, numeric, String, or datetime as above
                 if initial is not provided - defaults to now()
         """
 
         initial_date = None
-
-        if isinstance(initial, Callable):
-            initial = initial()
 
         if initial is None:
             initial_date = datetime.now()
@@ -86,7 +84,7 @@ class DateTime(datetime, _Core):
     def __format__(self, format_spec):
         """ Magic method to implement customised formatting"""
         if not format_spec: # No format spec - always return the ISO format
-            return str(self)
+            return super(DateTime, self).__str__()
 
         fmt_match = DateTime.fmt_spec.match(format_spec)
         if fmt_match:
@@ -94,7 +92,10 @@ class DateTime(datetime, _Core):
             return "{val:{fmt}}".format(fmt = fmt, val=val)
         else:
             val, fmt  = self,  format_spec
-            return "{val:{fmt}}".format(fmt = fmt, val=datetime(val))
+            return super(DateTime, self).__format__(fmt)
+
+    def __str__(self):
+        return "{:v}".format(self)
 
 class NHSNumber(str, _Core):
     def __init__(self, number):
